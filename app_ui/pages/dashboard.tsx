@@ -16,7 +16,7 @@ const Dashboard: NextPage = ()=> {
     },[])
 
     return (
-        <div className="h-full m-0 flex flex-col fixed">
+        <div className="h-full w-full m-0 flex flex-col fixed">
             <Head>
                 <title>Dashboard</title>
             </Head>
