@@ -42,7 +42,6 @@ def pdf(pdf_base64):
         pdf.write(decoded_data)
     
     kk = convert_from_path(path_to_pdf + f"{i}.pdf", poppler_path="C:/Users/91947/Downloads/poppler-22.11.0/Library/bin")
-    print(len(kk))
 
     res = []
     for img in kk:
@@ -72,13 +71,13 @@ def for_jpegs(pdf_base64):
 def run_model_here(filedata) -> str:    # input base64, output prediction
     meta, base64str = filedata.split(",")
     file_type = meta.split("/")[1].split(";")[0]
-    print(file_type)
+    print(file_type, base64str[:20])
     if file_type == "pdf":
         return pdf(base64str)
     elif file_type in {"jpeg", "jpg", "png"}:
         return for_jpegs(base64str)
     elif file_type == "jfif":
-        return '0'
+        return '-1'
     elif file_type == "wpeg":
-        return '0'
-    return '0'
+        return '-1'
+    return '-2'

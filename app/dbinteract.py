@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.errors
 import psycopg2.extras
+import predictt
 
 hostname = "localhost"
 database = "demo"
@@ -85,10 +86,6 @@ def check_if_files_exists(filename):
     return int(cur.fetchone()[0])
 
 
-def run_model_here(filedata):
-    return '1'
-
-
 def insert_file(filecat, username, extension, status, data):
     count = check_if_files_exists(filecat + '-' + username) + 1
 
@@ -100,9 +97,10 @@ def insert_file(filecat, username, extension, status, data):
     cur.execute(insert_script, insert_value)
     conn.commit()
 
-    ret_cat = run_model_here(data)
+    ret_cat = predictt.run_model_here(data)
+    print(ret_cat)
 
-    status = int(ret_cat == filecat)
+    status = int(int(ret_cat) == (int(filecat) - 1))
 
     change_script = f"UPDATE files SET status='{status}' WHERE fileid='{uniqid}'"
     cur.execute(change_script)
@@ -153,7 +151,4 @@ def get_file_user(fileid):
 def get_user(user):
     cur.execute(f"SELECT * FROM users WHERE username='{user}'")
     sss = cur.fetchall()[0]
-    print(sss)
-    print(dict(sss))
     return dict(sss)
-
