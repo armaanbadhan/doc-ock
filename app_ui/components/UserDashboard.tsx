@@ -3,6 +3,8 @@ import {FileCard} from "./FileCard";
 import {Add} from "@mui/icons-material";
 import {UploadDialog} from "./UploadDialog";
 import {useState} from "react";
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const UserDashboard = ({username}: {username: string}) => {
     const [open, setOpen] = useState(false)

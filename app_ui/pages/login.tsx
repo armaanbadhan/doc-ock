@@ -2,13 +2,14 @@ import React, {ChangeEvent, CSSProperties, useEffect, useState} from "react";
 import {NextPage} from "next";
 import {Fade} from "react-awesome-reveal";
 import Head from "next/head";
-import {Button, FormControlLabel, InputLabel, Radio, RadioGroup, Tab, Tabs, TextField} from "@mui/material";
+import {Button, FormControlLabel, Radio, RadioGroup, Tab, Tabs, TextField} from "@mui/material";
 import axios from "axios";
 import {useRouter} from "next/router";
-import {signIn} from "next-auth/react";
 import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
 import {LoadingDialog} from "../components/LoadingDialog";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Login : NextPage = () => {
 
@@ -66,7 +67,7 @@ const Login : NextPage = () => {
 
     const handleLogin = ()=>{
         if(username==="" || password==="") {
-            alert("One or more fields are empty")
+            toast("One or more fields are empty")
             return
         }
         setLoading(true)
@@ -82,7 +83,7 @@ const Login : NextPage = () => {
             }
         }).then(response => {
             if(response.data === 0) {
-                alert("Login failed, please check your details")
+                toast("Login failed, please check your details")
             }
             else {
                 localStorage.setItem("docuser", username)
@@ -91,22 +92,22 @@ const Login : NextPage = () => {
             }
         }).catch(error => {
             console.log(error)
-            alert(error.response.data)
+            toast(error.message)
         }).finally(()=> setLoading(false))
     }
 
     const handleSignUp = ()=>{
         if(username==="" || password==="" || email==="" || name==="" || password==="") {
-            alert("One or more fields are empty")
+            toast("One or more fields are empty")
             return
         }
         if(password!==confirmPassword) {
-            alert("Password and confirm password do not match")
+            toast("Password and confirm password do not match")
             return
         }
 
         if(username.includes("-")) {
-            alert("Heiphen not allowed in username :redeyes:")
+            toast("Heiphen not allowed in username :redeyes:")
             return
         }
 
@@ -132,11 +133,10 @@ const Login : NextPage = () => {
                 router.push("/dashboard")
             }
             else {
-                alert("Sign up failed, username already exists")
+                toast("Sign up failed, username already exists")
             }
         }).catch(error=> {
-            alert(error)
-            console.log(`${process.env.NEXTAUTH_URL}`)
+            toast(error.message)
             console.log(error)
         }).finally(() => setLoading(false))
 
@@ -313,6 +313,7 @@ const Login : NextPage = () => {
                 }
             </div>
             <LoadingDialog open={loading} onClose={()=> {}} />
+            <ToastContainer position="top-right" autoClose={5000} />
         </div>
     )
 }

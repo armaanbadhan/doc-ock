@@ -1,6 +1,7 @@
 import {Button, Dialog, DialogContent, DialogProps, DialogTitle} from "@mui/material";
 import {ChangeEvent, useState} from "react";
 import {documentTypes} from "../public/staticstuff";
+import {toast, ToastContainer} from "react-toastify";
 
 export const UploadDialog = ({open, onClose}: DialogProps) => {
 
@@ -18,7 +19,7 @@ export const UploadDialog = ({open, onClose}: DialogProps) => {
 
     const uploadFile = () => {
         if(!file) {
-            alert("Please upload a file")
+            toast("Please upload a file")
             return
         }
         alert(file!.name + " " + file!.type + " " + file.size)
@@ -56,6 +57,7 @@ export const UploadDialog = ({open, onClose}: DialogProps) => {
                     Upload file
                 </Button>
             </DialogContent>
+            <ToastContainer />
         </Dialog>
     )
 }
