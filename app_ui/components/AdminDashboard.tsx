@@ -43,7 +43,7 @@ export const AdminDashboard = ()=> {
             }
             <div className="text-[20px] font-bold my-[20px]">Approved Files</div>
             {
-                approvedFiles.length > 0 && <FileList admin files={approvedFiles} />
+                approvedFiles.length > 0 && <FileList files={approvedFiles} />
             }
             <ToastContainer position="top-right" />
         </div>

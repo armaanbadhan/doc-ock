@@ -17,7 +17,7 @@ export const FileCard = ({file, admin}: {file: UploadedFile, admin: boolean}) =>
                 <div className="flex flex-row p-[10px] w-full items-center">
                     <div className="flex-auto">
                         <div className="font-bold text-[15px]">{`${file.fileid}.${file.extension}`}</div>
-                        <div>{documentTypes[file.filecat - 1]}</div>
+                        <div className="text-ellipsis overflow-hidden w-full whitespace-nowrap">{documentTypes[file.filecat - 1]}</div>
                     </div>
                     {
                         file.status == 1 ? (

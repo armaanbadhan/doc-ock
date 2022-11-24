@@ -3,6 +3,7 @@ import {Button, Dialog, DialogContent, DialogProps, DialogTitle, TextField} from
 import {toast, ToastContainer} from "react-toastify";
 import {LoadingDialog} from "./LoadingDialog";
 import {ChangeEvent, useState} from "react";
+import axios from "axios";
 
 export const ReviewDialog = ({file, open, onClose}: {file: UploadedFile} & DialogProps) => {
 
@@ -21,14 +22,40 @@ export const ReviewDialog = ({file, open, onClose}: {file: UploadedFile} & Dialo
         return check
     }
 
+    const changeStatus = (status: number) => {
+        setLoading(true)
+        axios({
+            method: "POST",
+            url: `${process.env.NEXTAUTH_URL}/status-update`,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: {
+                fileid: file.fileid,
+                status: status
+            }
+        }).then(() => {
+            toast("Action completed successfully")
+            // @ts-ignore
+            onClose()
+        }).catch(error => {
+            console.error(error)
+            toast(error.message)
+        }).finally(() => {
+            setLoading(false)
+        })
+    }
+
     const approveFile = () => {
         if(!checkConfirm())
             return
+        changeStatus(1)
     }
 
     const rejectFile = () => {
         if(!checkConfirm())
             return
+        changeStatus(2)
     }
 
     return (
