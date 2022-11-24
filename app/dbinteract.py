@@ -145,3 +145,12 @@ def update_status(fileid, status):
         change_script = f"UPDATE files SET status='{status}' WHERE fileid='{fileid}'"
         cur.execute(change_script)
         conn.commit()
+
+def get_file_user(fileid):
+    cur.execute(f"SELECT username FROM files WHERE fileid='{fileid}'")
+    return cur.fetchone()[0]
+
+def get_user(user):
+    cur.execute(f"SELECT * FROM users WHERE username='{user}'")
+    return cur.fetchone()[0]
+

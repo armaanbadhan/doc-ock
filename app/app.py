@@ -1,6 +1,7 @@
 from flask import Flask, request
 import dbinteract
 from flask_cors import CORS, cross_origin
+import smtplib
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -56,6 +57,15 @@ def user(username):
 def admin_status_update():
     dict = request.json
     dbinteract.update_status(fileid=dict["fileid"], status=dict["status"])
+    username = dbinteract.get_file_user(dict["fileid"])
+    user = dbinteract.get_user(username)
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    approve_message = f"Hey {user.name}, \nwe are pleased to announce that the file {dict['fileid']} uploaded by you has been approved by an admin.\nLooking forword to providing you the best services.\n\nRegards,\nTeam Doc-Ock"
+    reject_message = f"Hey {user.name}, \nwe regret to announce that the file {dict['fileid']} uploaded by you has been rejected by an admin. Please make sure to upload only valid files. If you feel this is a mistake then suffer.\nLooking forword to providing you the best services.\n\nRegards,\nTeam Doc-Ock"
+    s.login('kamikazeyada@gmail.com', 'Kamikaze123')
+    s.sendmail('kamikazeyada@gmail.com',user.email,approve_message if dict['status'] == '1' else reject_message)
+    s.close()
     return '1'
 
 
