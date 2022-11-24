@@ -152,5 +152,8 @@ def get_file_user(fileid):
 
 def get_user(user):
     cur.execute(f"SELECT * FROM users WHERE username='{user}'")
-    return cur.fetchone()[0]
+    sss = cur.fetchall()[0]
+    print(sss)
+    print(dict(sss))
+    return dict(sss)
 
