@@ -6,6 +6,7 @@ import axios from "axios";
 import {LoadingDialog} from "./LoadingDialog";
 import {ApprovedDialog} from "./ApprovedDialog";
 import {PendingDialog} from "./PendingDialog";
+import {router} from "next/client";
 
 export const UploadDialog = ({open, onClose}: DialogProps) => {
 
@@ -33,9 +34,10 @@ export const UploadDialog = ({open, onClose}: DialogProps) => {
 
     const uploadFile = async (file: File)=> {
         const encodedFile = await getBase64(file) as string
-        const temp = encodedFile.split(",")
+        let temp = encodedFile.split(",")
         const encoding = temp[temp.length - 1]
-        const extension = file.name.split(".")[0]
+        temp = file.name.split(".")
+        const extension = temp[temp.length - 1]
         const response = await axios({
             method: "POST",
             url: `${process.env.NEXTAUTH_URL}/doc-upload`,
@@ -114,8 +116,16 @@ export const UploadDialog = ({open, onClose}: DialogProps) => {
                 <ToastContainer />
                 <LoadingDialog open={loading} onClose={()=> {}} />
             </Dialog>
-            <ApprovedDialog open={approved} onClose={()=> setApproved(false)} />
-            <PendingDialog open={pending} onClose={()=> setPending(false)} />
+            <ApprovedDialog open={approved} onClose={
+                ()=> {
+                    setApproved(false)
+                }
+            } />
+            <PendingDialog open={pending} onClose={
+                ()=> {
+                    setPending(false)
+                }
+            } />
         </>
     )
 }
