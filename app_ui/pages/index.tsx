@@ -13,7 +13,7 @@ export default function Home() {
             <Head>
                 <title>Doc-Ock</title>
                 <meta name="description" content="Upload imp docs and get them verified for some reason idk" />
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="/docock.svg" />
             </Head>
             <div className="flex flex-row items-center justify-center">
                 <div className="text-[70px] font-bold">
@@ -43,7 +43,8 @@ export default function Home() {
                             }}
                             onClick={(e)=>{
                                 e.preventDefault()
-                                router.push("/login")
+                                // router.push("/login")
+                                router.push("/dashboard")
                             }}>
                             Sign up/login
                         </Button>
