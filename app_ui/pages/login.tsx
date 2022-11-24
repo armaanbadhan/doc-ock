@@ -1,8 +1,8 @@
-import React, {CSSProperties, useEffect, useState} from "react";
+import React, {ChangeEvent, CSSProperties, useEffect, useState} from "react";
 import {NextPage} from "next";
 import {Fade} from "react-awesome-reveal";
 import Head from "next/head";
-import {Button, InputLabel, Tab, Tabs, TextField} from "@mui/material";
+import {Button, FormControlLabel, InputLabel, Radio, RadioGroup, Tab, Tabs, TextField} from "@mui/material";
 import axios from "axios";
 import {useRouter} from "next/router";
 
@@ -22,6 +22,7 @@ const Login : NextPage = () => {
     const [name,setName] = useState("")
     const [email,setEmail] = useState("")
     const [confirmPassword,setConfirmPassword] = useState("")
+    const [type, setType] = useState("user")
     const [savedUsername,setSavedUsername] : [string | null, any] = useState(null)
 
 
@@ -50,8 +51,12 @@ const Login : NextPage = () => {
         setEmail(event.target.value)
     }
 
-    const changeConfirmPassword = (event : any) => {
+    const changeConfirmPassword = (event : ChangeEvent<HTMLInputElement>) => {
         setConfirmPassword(event.target.value)
+    }
+
+    const changeType = (event: ChangeEvent<HTMLInputElement>) => {
+        setType(event.target.value)
     }
 
     const handleLogin = ()=>{
@@ -261,6 +266,19 @@ const Login : NextPage = () => {
                                     }}
                                     required/>
                             </Fade>
+
+                            <Fade
+                                direction="up"
+                                triggerOnce
+                                className="w-[90%] flex items-center"
+                            >
+                                <div className="text-center w-full font-bold text-[20px]">Who are you?</div>
+                                <RadioGroup aria-required onChange={changeType} value={type} className="flex-auto flex flex-row justify-evenly items-center">
+                                    <FormControlLabel control={<Radio />} label="User" value="user" />
+                                    <FormControlLabel control={<Radio />} label="Admin" value="admin" />
+                                </RadioGroup>
+                            </Fade>
+
                             <Button
                                 style={buttonStyle}
                                 onClick={handleSignUp}>
