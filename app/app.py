@@ -1,7 +1,6 @@
-from flask import Flask, redirect, request, url_for
+from flask import Flask, request
 import dbinteract
 from flask_cors import CORS, cross_origin
-import base64
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -9,17 +8,14 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 
-
-
-
-@app.route("/login", methods=["POST"])           # login validation of user
+@app.route("/login", methods=["POST"])
 def login():
     dict = request.json
     response = dbinteract.check_password(dict["username"], dict["password"])
     return str(response)
 
 
-@app.route("/signup", methods=["POST"])          # signup of a new user
+@app.route("/signup", methods=["POST"])
 @cross_origin()
 def signup():
     dict = request.json
@@ -36,11 +32,14 @@ def signup():
 @app.route("/doc-upload", methods=["POST"])      # user aploading a new document
 def doc_upload():
     dict = request.json
-    for i in dict:
-        print(i, dict[i])
-    with open(f"fileToSave.{dict['extension']}", "wb") as fh:
-        fh.write(base64.b64decode(dict["data"]))
-    return "uploaded or not uploaded"                   # sucessfully uploaded, give a unique iq type-username-1.2.3
+    status = dbinteract.insert_file(
+        filecat = dict["filecat"], 
+        username = dict["username"], 
+        extension = dict["extension"], 
+        status = "0", 
+        data = dict["data"]
+    )
+    return str(status)
 
 
 @app.route("/<name>", methods=["GET"])          # signup of new user

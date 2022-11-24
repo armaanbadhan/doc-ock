@@ -32,6 +32,22 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 #     cur.execute(create_script)
 #     conn.commit()
 
+
+# def create_files_table():
+#     create_script = """
+#     CREATE TABLE IF NOT EXISTS files (
+#         fileid      varchar(50) PRIMARY KEY,
+#         username    varchar(30),
+#         filecat     varchar(40),
+#         extension   varchar(10),
+#         status      varchar(10),
+#         data        text
+#     )
+#     """
+#     cur.execute(create_script)
+#     conn.commit()
+
+
 def check_if_username_exists(username):
     check_script = "SELECT COUNT(*) FROM users WHERE username=%s"
     check_value = (username,)
@@ -63,3 +79,36 @@ def insert_user(username, name, email, password, type_="user"):
     cur.execute(insert_script, insert_value)
     conn.commit()
     return True
+
+
+def check_if_files_exists(filename):
+    check_script = f"SELECT COUNT(*) FROM files WHERE fileid LIKE '{filename}%'"
+    cur.execute(check_script)
+    conn.commit()
+    return int(cur.fetchone()[0])
+
+
+def run_model_here(filedata):
+    return '1'
+
+
+def insert_file(filecat, username, extension, status, data):
+    count = check_if_files_exists(filecat + '-' + username) + 1
+
+    uniqid = filecat + "-" + username + "-" + str(count)
+
+    insert_script = "INSERT INTO files (fileid, filecat, username, extension, status, data) VALUES (%s, %s, %s, %s, %s, %s)"
+    insert_value = (uniqid, filecat, username, extension, status, data,)
+
+    cur.execute(insert_script, insert_value)
+    conn.commit()
+
+    ret_cat = run_model_here(data)
+
+    status = int(ret_cat == filecat)
+
+    change_script = f"UPDATE files SET status='{status}'"
+    cur.execute(change_script)
+    conn.commit()
+
+    return status
