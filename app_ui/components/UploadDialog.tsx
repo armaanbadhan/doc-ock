@@ -34,9 +34,7 @@ export const UploadDialog = ({open, onClose}: DialogProps) => {
 
     const uploadFile = async (file: File)=> {
         const encodedFile = await getBase64(file) as string
-        let temp = encodedFile.split(",")
-        const encoding = temp[temp.length - 1]
-        temp = file.name.split(".")
+        let temp = file.name.split(".")
         const extension = temp[temp.length - 1]
         const response = await axios({
             method: "POST",
@@ -48,7 +46,7 @@ export const UploadDialog = ({open, onClose}: DialogProps) => {
                 username: localStorage.getItem("docuser"),
                 filecat: documentTypes.indexOf(category) + 1,
                 extension: extension,
-                data: encoding
+                data: encodedFile
             }
         })
         return response.data

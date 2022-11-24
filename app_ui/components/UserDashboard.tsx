@@ -7,6 +7,7 @@ import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {UploadedFile} from "../public/types";
 import axios from "axios";
+import {FileList} from "./FileList";
 
 export const UserDashboard = () => {
     const [open, setOpen] = useState(false)
@@ -28,19 +29,9 @@ export const UserDashboard = () => {
         <>
             <div className="font-bold text-[25px] m-[20px]">Files</div>
             <div className="mx-[20px] pb-[30px] flex-auto overflow-y-auto">
-
-                <Grid container spacing={2}>
-                    {
-                        files.length > 0 && files.map((file,i)=> {
-                            return (
-                                <Grid item md={2} sm={4} xs={12} key={i}>
-                                    <FileCard file={file} />
-                                </Grid>
-                            )
-                        })
-                    }
-                </Grid>
-
+                {
+                    files.length > 0 && <FileList files={files} />
+                }
             </div>
             <Fab variant="extended" onClick={()=> {setOpen(true)}} size="large" sx={{
                 alignItems: "center",
