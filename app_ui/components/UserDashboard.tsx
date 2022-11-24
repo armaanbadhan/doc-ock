@@ -2,12 +2,27 @@ import {Fab, Grid} from "@mui/material";
 import {FileCard} from "./FileCard";
 import {Add} from "@mui/icons-material";
 import {UploadDialog} from "./UploadDialog";
-import {useState} from "react";
-import {ToastContainer} from "react-toastify";
+import {useEffect, useState} from "react";
+import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {UploadedFile} from "../public/types";
+import axios from "axios";
 
-export const UserDashboard = ({username}: {username: string}) => {
+export const UserDashboard = () => {
     const [open, setOpen] = useState(false)
+    const [files, setFiles] = useState<UploadedFile[]>([])
+
+    useEffect(()=> {
+        axios({
+            method: "GET",
+            url: `${process.env.NEXTAUTH_URL}/file/${localStorage.getItem("docuser")}`
+        })
+            .then(response=> setFiles(response.data))
+            .catch(error => {
+                console.error(error)
+                toast(error.message)
+            })
+    },[])
 
     return (
         <>
@@ -16,10 +31,10 @@ export const UserDashboard = ({username}: {username: string}) => {
 
                 <Grid container spacing={2}>
                     {
-                        [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17].map((a,i)=> {
+                        files.length > 0 && files.map((file,i)=> {
                             return (
                                 <Grid item md={2} sm={4} xs={12} key={i}>
-                                    <FileCard />
+                                    <FileCard file={file} />
                                 </Grid>
                             )
                         })

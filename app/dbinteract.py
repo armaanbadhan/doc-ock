@@ -52,14 +52,12 @@ def check_if_username_exists(username):
     check_script = "SELECT COUNT(*) FROM users WHERE username=%s"
     check_value = (username,)
     cur.execute(check_script, check_value)
-    conn.commit()
     return cur.fetchone()[0]
 
 def check_password(username, password):
     check_script = "SELECT COUNT(*) FROM users WHERE username=%s AND password=%s"
     check_value = (username,password,)
     cur.execute(check_script, check_value)
-    conn.commit()
     ret = cur.fetchone()[0]
 
     if not ret:
@@ -84,7 +82,6 @@ def insert_user(username, name, email, password, type_="user"):
 def check_if_files_exists(filename):
     check_script = f"SELECT COUNT(*) FROM files WHERE fileid LIKE '{filename}%'"
     cur.execute(check_script)
-    conn.commit()
     return int(cur.fetchone()[0])
 
 
@@ -107,7 +104,7 @@ def insert_file(filecat, username, extension, status, data):
 
     status = int(ret_cat == filecat)
 
-    change_script = f"UPDATE files SET status='{status}'"
+    change_script = f"UPDATE files SET status='{status}' WHERE fileid='{uniqid}'"
     cur.execute(change_script)
     conn.commit()
 
@@ -118,4 +115,33 @@ def fetch_files_all():
     fetch_script = "SELECT * FROM files WHERE status!='2'"
 
     cur.execute(fetch_script)
-    return str(cur.fetchall())
+    ans = cur.fetchall()
+    dict_result = []
+    for row in ans:
+        dict_result.append(dict(row))
+    return dict_result
+
+
+def fetch_user_files(username):
+    if check_if_username_exists(username):
+        fetch_script1 = f"SELECT * FROM files WHERE username='{username}'"
+
+        cur.execute(fetch_script1)
+        ans = cur.fetchall()
+        dict_result = []
+        for row in ans:
+            dict_result.append(dict(row))
+        return dict_result
+    else:
+        print("not found")
+        return "[]"
+
+
+def update_status(fileid, status):
+    if status == '2':
+        cur.execute(f"DELETE FROM files WHERE fileid='{fileid}'")
+        conn.commit()
+    else:
+        change_script = f"UPDATE files SET status='{status}' WHERE fileid='{fileid}'"
+        cur.execute(change_script)
+        conn.commit()

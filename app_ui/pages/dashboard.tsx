@@ -13,7 +13,8 @@ const Dashboard: NextPage = ()=> {
     useEffect(()=>{
         setUsername(localStorage.getItem("docuser") || "")
         setType(localStorage.getItem("doctype") || "user")
-    },[])
+        console.log(username, type)
+    },[username])
 
     return (
         <div className="h-full w-full m-0 flex flex-col fixed">
@@ -23,9 +24,9 @@ const Dashboard: NextPage = ()=> {
             <Navbar />
             {
                 type === "user" ? (
-                    <UserDashboard username={username} />
+                    <UserDashboard />
                 ) : (
-                    <AdminDashboard username={username} />
+                    <AdminDashboard />
                 )
             }
         </div>

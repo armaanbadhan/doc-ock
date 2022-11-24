@@ -1,4 +1,4 @@
-export const AdminDashboard = ({username}: {username: string})=> {
+export const AdminDashboard = ()=> {
     return (
         <div>
             Approve these files vro
