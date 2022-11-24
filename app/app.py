@@ -47,15 +47,19 @@ def fetch_admin():
     return dbinteract.fetch_files_all()
 
 
-@app.route("/file/<name>", methods=["GET"])
-def user(name):
+@app.route("/file/<username>", methods=["GET"])
+def user(username):
+    return dbinteract.fetch_user_files(username)
+
+
+@app.route("/status-update", methods=["POST"])
+def admin_status_update():
     dict = request.json
-    for i in dict:
-        print(i, dict[i])
-    return "all files of user"                 # return files of user
+    dbinteract.update_status(fileid=dict["fileid"], status=dict["status"])
+    return '1'
 
 
-@app.route("/")                                         # useless
+@app.route("/")
 def hello():
     return "Hello World!"
 
