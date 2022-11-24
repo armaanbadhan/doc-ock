@@ -4,7 +4,7 @@ import {Add} from "@mui/icons-material";
 import {UploadDialog} from "./UploadDialog";
 import {useState} from "react";
 
-export const UserDashboard = () => {
+export const UserDashboard = ({username}: {username: string}) => {
     const [open, setOpen] = useState(false)
 
     return (

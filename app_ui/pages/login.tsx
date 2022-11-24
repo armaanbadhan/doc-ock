@@ -5,6 +5,9 @@ import Head from "next/head";
 import {Button, FormControlLabel, InputLabel, Radio, RadioGroup, Tab, Tabs, TextField} from "@mui/material";
 import axios from "axios";
 import {useRouter} from "next/router";
+import {signIn} from "next-auth/react";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 const Login : NextPage = () => {
 
@@ -23,7 +26,7 @@ const Login : NextPage = () => {
     const [email,setEmail] = useState("")
     const [confirmPassword,setConfirmPassword] = useState("")
     const [type, setType] = useState("user")
-    const [savedUsername,setSavedUsername] : [string | null, any] = useState(null)
+    const [savedUsername,setSavedUsername] = useState<string | null>()
 
 
     const changeTab = (event: any, newTab: number)=>{
@@ -64,24 +67,29 @@ const Login : NextPage = () => {
             alert("One or more fields are empty")
             return
         }
-        // axios({
-        //     method : "POST",
-        //     headers : {
-        //         "Content-Type" : "application/json"
-        //     },
-        //     url : `${process.env.REACT_APP_API_BASE_URL}/authenticate`,
-        //     data : {
-        //         username : username,
-        //         password : password
-        //     }
-        // }).then(response => {
-        //     localStorage.setItem("sadchatUsername",username)
-        //     localStorage.setItem("sadchatJwtToken",response.data.token)
-        //     router.push("/dashboard")
-        // }).catch(error => {
-        //     console.log(error)
-        //     alert(error.response.data)
-        // })
+        axios({
+            method : "POST",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            url : `${process.env.NEXTAUTH_URL}/login`,
+            data : {
+                username : username,
+                password : password
+            }
+        }).then(response => {
+            if(response.data === 0) {
+                alert("Login failed, please check your details")
+            }
+            else {
+                localStorage.setItem("docuser", username)
+                localStorage.setItem("doctype", response.data === 1 ? "user" : "admin")
+                router.push("/dashboard")
+            }
+        }).catch(error => {
+            console.log(error)
+            alert(error.response.data)
+        })
     }
 
     const handleSignUp = ()=>{
@@ -93,36 +101,46 @@ const Login : NextPage = () => {
             alert("Password and confirm password do not match")
             return
         }
-        console.log(password)
-        // axios({
-        //     method : "POST",
-        //     headers : {
-        //         "Content-Type" : "application/json"
-        //     },
-        //     url : `${process.env.REACT_APP_API_BASE_URL}/user`,
-        //     data : {
-        //         "username" : username,
-        //         "password" : password,
-        //         "firstName" : firstName,
-        //         "lastName" : lastName,
-        //         "email" : email
-        //     }
-        // }).then(response => {
-        //     localStorage.setItem("sadchatUsername",username)
-        //     localStorage.setItem("sadchatJwtToken",response.data.token)
-        //     router.push("/dashboard")
-        // }).catch(error => {
-        //     console.log(error)
-        //     alert(error.response.data)
-        // })
+
+        if(username.includes("-")) {
+            alert("Heiphen not allowed in username :redeyes:")
+            return
+        }
+        axios({
+            method: "POST",
+            url: `${process.env.NEXTAUTH_URL}/signup`,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: {
+                username: username,
+                password: password,
+                name: name,
+                type: type,
+                email: email
+            }
+        }).then(response=> {
+            if(response.data === 1) {
+                localStorage.setItem("docuser", username)
+                localStorage.setItem("doctype", type)
+                router.push("/dashboard")
+            }
+            else {
+                alert("Sign up failed, username already exists")
+            }
+        }).catch(error=> {
+            alert(error)
+            console.log(`${process.env.NEXTAUTH_URL}`)
+            console.log(error)
+        })
+
     }
 
     useEffect(()=>{
-        // setSavedUsername(localStorage.getItem("sadchatUsername"))
-        // console.log(savedUsername)
-        // if(savedUsername) {
-        //     router.push("/dashboard")
-        // }
+        setSavedUsername(localStorage.getItem("docuser"))
+        if(savedUsername) {
+            router.push("/dashboard")
+        }
     },[])
 
     return (
