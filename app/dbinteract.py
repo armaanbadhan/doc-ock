@@ -112,3 +112,10 @@ def insert_file(filecat, username, extension, status, data):
     conn.commit()
 
     return status
+
+
+def fetch_files_all():
+    fetch_script = "SELECT * FROM files WHERE status!='2'"
+
+    cur.execute(fetch_script)
+    return str(cur.fetchall())

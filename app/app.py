@@ -33,7 +33,7 @@ def signup():
 def doc_upload():
     dict = request.json
     status = dbinteract.insert_file(
-        filecat = dict["filecat"], 
+        filecat = str(dict["filecat"]), 
         username = dict["username"], 
         extension = dict["extension"], 
         status = "0", 
@@ -42,7 +42,12 @@ def doc_upload():
     return str(status)
 
 
-@app.route("/<name>", methods=["GET"])          # signup of new user
+@app.route("/fetch-admin", methods=["GET"])
+def fetch_admin():
+    return dbinteract.fetch_files_all()
+
+
+@app.route("/file/<name>", methods=["GET"])
 def user(name):
     dict = request.json
     for i in dict:
