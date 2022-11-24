@@ -8,6 +8,7 @@ import {useRouter} from "next/router";
 import {signIn} from "next-auth/react";
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
+import {LoadingDialog} from "../components/LoadingDialog";
 
 const Login : NextPage = () => {
 
@@ -27,6 +28,7 @@ const Login : NextPage = () => {
     const [confirmPassword,setConfirmPassword] = useState("")
     const [type, setType] = useState("user")
     const [savedUsername,setSavedUsername] = useState<string | null>()
+    const [loading, setLoading] = useState(false)
 
 
     const changeTab = (event: any, newTab: number)=>{
@@ -67,6 +69,7 @@ const Login : NextPage = () => {
             alert("One or more fields are empty")
             return
         }
+        setLoading(true)
         axios({
             method : "POST",
             headers : {
@@ -89,7 +92,7 @@ const Login : NextPage = () => {
         }).catch(error => {
             console.log(error)
             alert(error.response.data)
-        })
+        }).finally(()=> setLoading(false))
     }
 
     const handleSignUp = ()=>{
@@ -106,6 +109,9 @@ const Login : NextPage = () => {
             alert("Heiphen not allowed in username :redeyes:")
             return
         }
+
+        setLoading(true)
+
         axios({
             method: "POST",
             url: `${process.env.NEXTAUTH_URL}/signup`,
@@ -132,7 +138,7 @@ const Login : NextPage = () => {
             alert(error)
             console.log(`${process.env.NEXTAUTH_URL}`)
             console.log(error)
-        })
+        }).finally(() => setLoading(false))
 
     }
 
@@ -306,6 +312,7 @@ const Login : NextPage = () => {
                     )
                 }
             </div>
+            <LoadingDialog open={loading} onClose={()=> {}} />
         </div>
     )
 }
