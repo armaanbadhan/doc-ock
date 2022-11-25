@@ -3,20 +3,30 @@ import {UploadedFile} from "../public/types";
 import {documentTypes} from "../public/staticstuff";
 import {MdOutlinePending} from "react-icons/md";
 import {Button, Tooltip} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ReviewDialog} from "./ReviewDialog";
+import axios from "axios";
 
 export const FileCard = ({file, admin}: {file: UploadedFile, admin: boolean}) => {
 
     const [open, setOpen] = useState(false)
+    const [fileObject, setFileObject] = useState<File>()
+
+    const mimeType = file.data.split(";")[0].slice(4)
+
+    useEffect(() => {
+        fetch(file.data)
+            .then(response => response.arrayBuffer())
+            .then(buffer => setFileObject(new File([buffer], file.fileid, {type: mimeType})))
+    },[])
 
     return (
         <>
             <div className="flex flex-col shadow-md rounded-[15px] hover:cursor-pointer hover:shadow-xl duration-500">
-                <img src="/docock.svg" className="h-[150px] w-full object-cover" alt="doc" />
+                <img src={fileObject && mimeType.includes("image") ? URL.createObjectURL(fileObject) : "/docock.svg"} className="h-[150px] w-full object-cover" alt="doc" />
                 <div className="flex flex-row p-[10px] w-full items-center">
                     <div className="flex-auto">
-                        <div className="font-bold text-[15px]">{`${file.fileid}.${file.extension}`}</div>
+                        <a href={file.data} download className="font-bold text-[15px] hover:text-blue-700 duration-300">{`${file.fileid}.${file.extension}`}</a>
                         <div className="text-ellipsis overflow-hidden w-full whitespace-nowrap">{documentTypes[file.filecat - 1]}</div>
                     </div>
                     {
