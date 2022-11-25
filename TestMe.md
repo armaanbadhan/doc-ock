@@ -8,3 +8,4 @@
 8. run `yarn install` to install dependencies.
 9. run `yarn run dev` to start the frontend.
 10. the website is now running on `localhost:3000`!
+11. changes need to be made to the paths in `app/predictt.py`
